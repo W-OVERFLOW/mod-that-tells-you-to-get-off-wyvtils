@@ -4,9 +4,9 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "6f53277"
 }
 
-version = "1.0"
-group = "dev.asbyth"
-archivesBaseName = "ForgeTemplate"
+version = "1.0.0"
+group = "net.wyvest"
+archivesBaseName = "ModThatTellsYouToGetOffWyvtils"
 
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
@@ -16,6 +16,8 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = false
+
+    clientRunArgs += '--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker'
 }
 
 configurations {
@@ -25,15 +27,14 @@ configurations {
 }
 
 repositories {
-    // Add maven repositories to your buildscript so that they can be used to resolve dependencies
-    // maven "https://repo1.maven.org/maven2/"
+    maven { url 'https://repo.woverflow.cc/' }
 }
 
 dependencies {
-    // How to normally add a dependency (If you don't want it to be added to the jar)
-    // implementation "com.example:example:1.0.0"
-    // If you would like to include it (have the library inside your jar) instead use
-    // include "com.example:example:1.0.0"
+    include ('gg.essential:loader-launchwrapper:1.1.3') {
+        transitive = false
+    }
+    implementation 'gg.essential:essential-1.8.9-forge:1788'
 }
 
 /**
@@ -79,4 +80,11 @@ reobf {
 }
 
 jar.dependsOn shadowJar
-jar.enabled = false
+jar {
+    manifest.attributes(
+            'ModSide': 'CLIENT',
+            'ForceLoadAsMod': true,
+            'TweakClass': 'gg.essential.loader.stage0.EssentialSetupTweaker'
+    )
+    enabled = false
+}
